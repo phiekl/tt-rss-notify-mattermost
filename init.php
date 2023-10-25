@@ -278,15 +278,10 @@ class Notify_Mattermost extends Plugin
         if (empty($article["link"])) {
             error_log("${log_prefix}No link found for article.");
             return $article;
-        } else {
-            $matches = [];
-            $rgx = '|^https?://[0-9a-z][^?]+|'; // strip GET variables from link.
-            if (preg_match($rgx, $article["link"], $matches)) {
-                $article_link = $matches[0];
-            } else {
-                error_log("${log_prefix}Link not matching regex '${rgx}': ${article["link"]}");
-                return $article;
-            }
+        }
+        if (!preg_match("|^https?://|", $article["link"])) {
+            error_log("${log_prefix}Invalid article link: ${article["link"]}");
+            return $article;
         }
 
         $feed_id = $article["feed"]["id"];
